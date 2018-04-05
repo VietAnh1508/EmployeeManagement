@@ -15,7 +15,7 @@ public class Department {
     @Column(name = "department_name", length = 50)
     private String departmentName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "department")
     private List<Employee> employeeList = new ArrayList<>();
 
     public Department() {
@@ -43,7 +43,8 @@ public class Department {
 
     @Override
     public String toString() {
-        return "Department [id=" + id + ", department_name='" + departmentName + "']";
+        return "Department { id: " + id
+                + ", department_name: '" + departmentName + " }";
     }
 
 }

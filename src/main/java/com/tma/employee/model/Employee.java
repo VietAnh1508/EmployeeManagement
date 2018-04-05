@@ -15,11 +15,11 @@ public class Employee {
     @Column(name = "name", length = 20)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "employee_role",
             joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -64,7 +64,9 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee [id=" + id + ", name='" + name + "']";
+        return "Employee { id: " + id
+                + ", name: '" + name
+                + "', department: '" + department.getDepartmentName() + " }";
     }
 
 }

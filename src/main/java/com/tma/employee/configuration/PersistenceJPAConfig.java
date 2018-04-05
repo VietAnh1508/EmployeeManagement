@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -23,12 +24,12 @@ import java.util.Properties;
 @EnableTransactionManagement
 @PropertySource({"classpath:application.properties"})
 @EnableJpaRepositories(basePackages = "com.tma.employee.repository")
-public class RepositoryConfig {
+public class PersistenceJPAConfig {
 
     private Environment env;
 
     @Autowired
-    public RepositoryConfig(Environment env) {
+    public PersistenceJPAConfig(Environment env) {
         this.env = env;
     }
 
@@ -60,6 +61,11 @@ public class RepositoryConfig {
     public PlatformTransactionManager transactionManager() {
         EntityManagerFactory factory = entityManagerFactory().getObject();
         return new JpaTransactionManager(factory);
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
     @Bean

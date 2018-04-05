@@ -1,8 +1,8 @@
 package com.tma.employee.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "role")
@@ -14,8 +14,8 @@ public class Role {
 
     private String role;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<Employee> employeeSet = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    private List<Employee> employeeSet = new ArrayList<>();
 
     public Role() {
     }
@@ -24,7 +24,7 @@ public class Role {
         this.role = role;
     }
 
-    public Role(String role, Set<Employee> employeeSet) {
+    public Role(String role, List<Employee> employeeSet) {
         this.role = role;
         this.employeeSet = employeeSet;
     }
@@ -37,16 +37,16 @@ public class Role {
         this.role = role;
     }
 
-    public Set<Employee> getEmployeeSet() {
+    public List<Employee> getEmployeeSet() {
         return employeeSet;
     }
 
-    public void setEmployeeSet(Set<Employee> employeeSet) {
+    public void setEmployeeSet(List<Employee> employeeSet) {
         this.employeeSet = employeeSet;
     }
 
     @Override
     public String toString() {
-        return "Role [id=" + id + ", role='" + role + "']";
+        return "Role { id: " + id + ", role: '" + role + "'} ";
     }
 }

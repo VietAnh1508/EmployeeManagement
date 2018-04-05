@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.List;
+import java.util.Set;
+
 public class MainApp {
 
     public static void main(String[] args) {
@@ -24,6 +27,11 @@ public class MainApp {
         DepartmentRepository departmentRepo = (DepartmentRepository) context.getBean("departmentRepository");
         RoleRepository roleRepo = (RoleRepository) context.getBean("roleRepository");
 
+        logger.info("Clean up database...");
+        employeeRepo.deleteAllInBatch();
+        departmentRepo.deleteAllInBatch();
+        roleRepo.deleteAllInBatch();
+
         logger.info("Create initial data");
 
         logger.info("Creating new roles...");
@@ -31,50 +39,79 @@ public class MainApp {
         Role leaderRole = new Role("Leader");
         Role developerRole = new Role("Developer");
 
-        logger.info("Store roles to database");
-        roleRepo.saveAndFlush(managerRole);
-        roleRepo.saveAndFlush(leaderRole);
-        roleRepo.saveAndFlush(developerRole);
-
         logger.info("Creating departments...");
         Department lab1 = new Department("Lab 1");
         Department lab2 = new Department("Lab 2");
 
-        logger.info("Store departments to database...");
+        logger.info("Create new employee...");
+        Employee empJohn = new Employee("John");
+        Employee empTony = new Employee("Tony");
+        Employee empAnn = new Employee("Ann");
+
+        logger.info("Add employees to departments");
+        empJohn.setDepartment(lab1);
+        empTony.setDepartment(lab2);
+        empAnn.setDepartment(lab2);
+
+        logger.info("Update department");
+        lab1.getEmployeeList().add(empJohn);
+        lab2.getEmployeeList().add(empTony);
+
+        logger.info("Save department to database");
         departmentRepo.saveAndFlush(lab1);
         departmentRepo.saveAndFlush(lab2);
 
-        logger.info("Create new employee...");
-        Employee empJohn = new Employee("John");
-        empJohn.setDepartment(lab1);
+        logger.info("Save employee to database");
+        employeeRepo.saveAndFlush(empJohn);
+        employeeRepo.saveAndFlush(empTony);
+        employeeRepo.saveAndFlush(empAnn);
+
+        logger.info("Set role for employees");
         empJohn.getRoles().add(managerRole);
 
-        logger.info("Store John to database");
-        employeeRepo.saveAndFlush(empJohn);
-
-        logger.info("Update employee_role and department");
-        managerRole.getEmployeeSet().add(empJohn);
-        roleRepo.saveAndFlush(managerRole);
-
-        lab1.getEmployeeList().add(empJohn);
-        departmentRepo.saveAndFlush(lab1);
-
-        logger.info("Create another employee");
-        Employee empTony = new Employee("Tony");
         empTony.getRoles().add(leaderRole);
-        empJohn.getRoles().add(developerRole);
-        empJohn.setDepartment(lab2);
+        empTony.getRoles().add(developerRole);
 
-        logger.info("Store Tony to database");
-        employeeRepo.saveAndFlush(empTony);
+        empAnn.getRoles().add(managerRole);
 
-        logger.info("Update employee_role and department");
+        logger.info("Update employee_role");
+        managerRole.getEmployeeSet().add(empJohn);
+        managerRole.getEmployeeSet().add(empAnn);
+
         leaderRole.getEmployeeSet().add(empTony);
+
         developerRole.getEmployeeSet().add(empTony);
+
+        logger.info("Save role to database");
+        roleRepo.saveAndFlush(managerRole);
         roleRepo.saveAndFlush(leaderRole);
         roleRepo.saveAndFlush(developerRole);
 
-        lab2.getEmployeeList().add(empTony);
+        logger.info("Save employee to database");
+        employeeRepo.saveAndFlush(empJohn);
+        employeeRepo.saveAndFlush(empTony);
+        employeeRepo.saveAndFlush(empAnn);
+
+        logger.info("Employee list");
+        List<Employee> employees = employeeRepo.findAll();
+        for (Employee emp : employees) {
+            System.out.println(emp);
+        }
+
+        logger.info("Department list");
+        List<Department> departments = departmentRepo.findAll();
+        for (Department dep : departments) {
+            System.out.println(dep);
+        }
+
+        logger.info("Get employee John");
+        Employee employee = employeeRepo.findByName("John");
+
+        logger.info("John's roles: ");
+        Set<Role> rolesOfJohn = employee.getRoles();
+        for (Role role : rolesOfJohn) {
+            System.out.println(role);
+        }
     }
 
 }
