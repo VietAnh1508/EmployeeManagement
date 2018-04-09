@@ -12,25 +12,33 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "department_name", length = 50)
-    private String departmentName;
+    @Column(name = "name", length = 50)
+    private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "department")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private List<Employee> employeeList = new ArrayList<>();
 
     public Department() {
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Department(String name) {
-        this.departmentName = name;
+        this.name = name;
     }
 
-    public String getDepartmentName() {
-        return departmentName;
+    public String getName() {
+        return name;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Employee> getEmployeeList() {
@@ -39,12 +47,6 @@ public class Department {
 
     public void setEmployeeList(List<Employee> employeeList) {
         this.employeeList = employeeList;
-    }
-
-    @Override
-    public String toString() {
-        return "Department { id: " + id
-                + ", department_name: '" + departmentName + " }";
     }
 
 }

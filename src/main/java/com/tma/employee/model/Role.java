@@ -12,41 +12,45 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String role;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
-    private List<Employee> employeeSet = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles")
+    private List<Employee> employees = new ArrayList<>();
 
     public Role() {
     }
 
-    public Role(String role) {
-        this.role = role;
+    public Role(String name) {
+        this.name = name;
     }
 
-    public Role(String role, List<Employee> employeeSet) {
-        this.role = role;
-        this.employeeSet = employeeSet;
+    public Role(String name, List<Employee> employees) {
+        this.name = name;
+        this.employees = employees;
     }
 
-    public String getRole() {
-        return role;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public List<Employee> getEmployeeSet() {
-        return employeeSet;
+    public String getName() {
+        return name;
     }
 
-    public void setEmployeeSet(List<Employee> employeeSet) {
-        this.employeeSet = employeeSet;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Role { id: " + id + ", role: '" + role + "'} ";
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }
